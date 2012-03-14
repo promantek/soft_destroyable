@@ -79,9 +79,9 @@ module SoftDestroySpecHelper
     association_reflection = model_obj.class.reflect_on_association(association_symbol.to_sym)
     association_reflection.options[:dependent].should == :destroy
     assign_association(model_obj, association_reflection, new_association_record)
-    association_reflection.klass.where(association_reflection.primary_key_name => model_obj.id).count.should > 0
+    association_reflection.klass.where(association_reflection.foreign_key => model_obj.id).count.should > 0
     model_obj.destroy!
-    association_reflection.klass.where(association_reflection.primary_key_name => model_obj.id).count.should == 0
+    association_reflection.klass.where(association_reflection.foreign_key => model_obj.id).count.should == 0
   end
 
   private
