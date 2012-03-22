@@ -251,14 +251,9 @@ module SoftDestroyable
       return unless association
       case reflection.macro
         when :has_many
-          self.class.send(:nullify_has_many_dependencies,
-                          self,
-                          reflection.name,
-                          reflection.klass,
-                          reflection.primary_key_name,
-                          reflection.dependent_conditions(self, self.class, nil))
+          send("has_many_dependent_for_#{reflection.name}")
         when :has_one
-          association.update_attributes(reflection.primary_key_name => nil)
+          send("has_one_dependent_#{reflection.options[:dependent]}_for_#{reflection.name}")
         else
       end
 
@@ -266,16 +261,12 @@ module SoftDestroyable
 
     def handle_delete_all(reflection, association)
       return unless association
-      self.class.send(:delete_all_has_many_dependencies,
-                      self,
-                      reflection.name,
-                      reflection.klass,
-                      reflection.dependent_conditions(self, self.class, nil))
+      send("has_many_dependent_for_#{reflection.name}")
     end
 
     def handle_delete(reflection, association)
       return unless association
-      association.update_attribute(reflection.primary_key_name, nil)
+      association.update_attribute(reflection.foreign_key, nil)
     end
 
     def wrap_with_callbacks(assoc_obj, action)
