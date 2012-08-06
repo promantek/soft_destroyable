@@ -11,6 +11,9 @@ class CallbackTest < Test::Unit::TestCase
     CallbackChild.delete_all
     SoftCallbackChild.delete_all
     CallbackParent.delete_all
+    Child.delete_all
+    SoftChild.delete_all
+    Parent.delete_all
   end
 
   def test_callback_before_soft_destroy_for_soft_children
@@ -47,6 +50,30 @@ class CallbackTest < Test::Unit::TestCase
     end
     assert_equal @fred.reload.deleted?, false
     assert_not_nil pebbles.reload
+  end
+
+  def test_touch_callback_after_has_many_soft_destroy
+    @fred = Parent.create!(:name => "fred")
+    @fred.soft_children << pebbles = SoftChild.new(:name => "pebbles")
+    previous_updated_at = @fred.updated_at
+    pebbles.destroy
+    assert_not_equal @fred.reload.updated_at, previous_updated_at
+  end
+
+  def test_touch_callback_after_has_many_hard_destroy
+    @fred = Parent.create!(:name => "fred")
+    @fred.soft_children << pebbles = SoftChild.new(:name => "pebbles")
+    previous_updated_at = @fred.updated_at
+    pebbles.destroy!
+    assert_not_equal @fred.reload.updated_at, previous_updated_at
+  end
+
+  def test_touch_callback_after_has_many_destroy
+    @fred = Parent.create!(:name => "fred")
+    @fred.children << pebbles = Child.new(:name => "pebbles")
+    previous_updated_at = @fred.updated_at
+    pebbles.destroy
+    assert_not_equal @fred.reload.updated_at, previous_updated_at
   end
 
 end

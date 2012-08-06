@@ -104,6 +104,7 @@ module SoftDestroyable
       transaction do
         before_destroy!
         cascade_destroy!
+        run_callbacks(:touch)
         delete
       end
     end

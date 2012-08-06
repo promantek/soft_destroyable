@@ -12,6 +12,7 @@ def setup_db
     create_table :parents do |t|
       t.string :name
       t.soft_destroyable
+      t.timestamps
     end
 
     # used to test non_dependent associations
@@ -253,12 +254,12 @@ class NonDependentChild < ActiveRecord::Base
 end
 
 class SoftChild < ActiveRecord::Base
-  belongs_to :parent
+  belongs_to :parent, :touch => true
   soft_destroyable
 end
 
 class Child < ActiveRecord::Base
-  belongs_to :parent
+  belongs_to :parent, :touch => true
 end
 
 class SoftOne < ActiveRecord::Base
