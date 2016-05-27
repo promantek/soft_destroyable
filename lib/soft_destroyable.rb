@@ -14,8 +14,8 @@ require "#{File.dirname(__FILE__)}/soft_destroyable/is_soft_destroyable"
 # Standard ActiveRecord destroy callbacks are _not_ called, however you can override +before_soft_destroy+, +after_soft_destroy+,
 # and +before_destroy!+ on your soft_destroyable models.
 #
-# Standard ActiveRecord dependent options :destroy, :restrict, :nullify, :delete_all, and :delete are supported.
-# +revive+ will _not_ undo the effects of +nullify+, +delete_all+, and +delete+.   +restrict+ is _not_ effected by the
+# Standard ActiveRecord dependent options :destroy, :restrict_with_exception, restrict_with_error, :nullify, :delete_all, and :delete are supported.
+# +revive+ will _not_ undo the effects of +nullify+, +delete_all+, and +delete+.   +restrict types+ are _not_ effected by the
 # +deleted?+ state.  In other words, deleted child models will still restrict destroying the parent.
 #
 # The +delete+ operation is _not_ modified by this module.
@@ -25,7 +25,7 @@ require "#{File.dirname(__FILE__)}/soft_destroyable/is_soft_destroyable"
 #
 # Examples:
 #   class Parent
-#     has_many :children, :dependent => :restrict
+#     has_many :children, :dependent => :restrict_with_exception
 #     has_many :animals, :dependent => :nullify
 #     soft_destroyable
 #
@@ -47,8 +47,8 @@ module SoftDestroyable
     def soft_destroyable(options = {})
       return if soft_destroyable?
 
-      scope :not_deleted, where(:deleted => false)
-      scope :deleted, where(:deleted => true)
+      scope :not_deleted, -> {where(:deleted => false)}
+      scope :deleted, -> {where(:deleted => true)}
 
       include InstanceMethods
       extend SingletonMethods
@@ -83,7 +83,7 @@ module SoftDestroyable
     end
 
     def with_restrict_option(type)
-      non_through_dependent_associations(type).reject { |k, v| k.options[:dependent] != :restrict }
+      non_through_dependent_associations(type).reject { |k, v| [:restrict_with_exception, :restrict_with_error].include?(k.options[:dependent]) == false }
     end
 
   end
@@ -201,7 +201,7 @@ module SoftDestroyable
     def cascade_to_soft_dependents(reviving = false, &block)
       return unless block_given?
 
-      # fail fast on :dependent => :restrict
+      # fail fast on :dependent => :restrict_with_exception
       restrict_dependencies.each { |assoc_sym| handle_restrict(assoc_sym) } unless reviving
 
       non_restrict_dependencies.each do |assoc_sym|
@@ -252,9 +252,9 @@ module SoftDestroyable
       return unless association
       case reflection.macro
         when :has_many
-          send("has_many_dependent_for_#{reflection.name}")
+          association.update_all(reflection.foreign_key => nil)
         when :has_one
-          send("has_one_dependent_#{reflection.options[:dependent]}_for_#{reflection.name}")
+          association.update_attribute(reflection.foreign_key, nil)
         else
       end
 
@@ -262,7 +262,7 @@ module SoftDestroyable
 
     def handle_delete_all(reflection, association)
       return unless association
-      send("has_many_dependent_for_#{reflection.name}")
+      association.delete_all
     end
 
     def handle_delete(reflection, association)

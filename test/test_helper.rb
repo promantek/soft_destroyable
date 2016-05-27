@@ -12,7 +12,7 @@ def setup_db
     create_table :parents do |t|
       t.string :name
       t.soft_destroyable
-      t.timestamps
+      t.timestamps null: false
     end
 
     # used to test non_dependent associations
@@ -119,27 +119,27 @@ def setup_db
       t.references :parent
     end
 
-    # used to test has_many <soft_destroyable_model>, :dependent => :restrict
+    # used to test has_many <soft_destroyable_model>, :dependent => :restrict_with_exception
     create_table :soft_restrict_children do |t|
       t.string :name
       t.references :parent
       t.soft_destroyable
     end
 
-    # used to test has_many <model>, :dependent => :restrict
+    # used to test has_many <model>, :dependent => :restrict_with_exception
     create_table :restrict_children do |t|
       t.string :name
       t.references :parent
     end
 
-    # used to test has_one <soft_destroyable_model>, :dependent => :restrict
+    # used to test has_one <soft_destroyable_model>, :dependent => :restrict_with_exception
     create_table :soft_restrict_ones do |t|
       t.string :name
       t.references :parent
       t.soft_destroyable
     end
 
-    # used to test has_one <model>, :dependent => :restrict
+    # used to test has_one <model>, :dependent => :restrict_with_exception
     create_table :restrict_ones do |t|
       t.string :name
       t.references :parent
@@ -233,10 +233,10 @@ class Parent < ActiveRecord::Base
   has_one :nullify_one, :dependent => :nullify
 
   # dependent restrict associations
-  has_many :soft_restrict_children, :dependent => :restrict
-  has_many :restrict_children, :dependent => :restrict
-  has_one :soft_restrict_one, :dependent => :restrict
-  has_one :restrict_one, :dependent => :restrict
+  has_many :soft_restrict_children, :dependent => :restrict_with_exception
+  has_many :restrict_children, :dependent => :restrict_with_exception
+  has_one :soft_restrict_one, :dependent => :restrict_with_exception
+  has_one :restrict_one, :dependent => :restrict_with_exception
 
   # dependent delete_all, delete associations
   has_many :soft_delete_all_children, :dependent => :delete_all
