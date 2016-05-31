@@ -19,6 +19,7 @@ class DependentDeleteTest < Test::Unit::TestCase
     @fred.destroy
     assert_equal true, @fred.deleted?
     assert_equal 0, SoftDeleteOne.where(:name => "pebbles", :parent_id => @fred.id).count
+    assert_equal 1, SoftDeleteOne.where(:name => "pebbles").count
   end
 
   def test_destroy_has_one_delete_children
@@ -27,6 +28,7 @@ class DependentDeleteTest < Test::Unit::TestCase
     @fred.destroy
     assert_equal true, @fred.deleted?
     assert_equal 0, DeleteOne.where(:name => "pebbles", :parent_id => @fred.id).count
+    assert_equal 1, DeleteOne.where(:name => "pebbles").count
   end
 
   def test_destroy_bang_has_one_soft_delete_one
@@ -36,6 +38,7 @@ class DependentDeleteTest < Test::Unit::TestCase
     @fred.destroy!
     assert_nil Parent.find_by_id(@fred.id)
     assert_equal 0, SoftDeleteOne.where(:name => "pebbles", :parent_id => @fred.id).count
+    assert_equal 1, SoftDeleteOne.where(:name => "pebbles").count
   end
 
   def test_destroy_bang_has_one_delete_one
@@ -44,6 +47,7 @@ class DependentDeleteTest < Test::Unit::TestCase
     @fred.destroy!
     assert_nil Parent.find_by_id(@fred.id)
     assert_equal 0, DeleteOne.where(:name => "pebbles", :parent_id => @fred.id).count
+    assert_equal 1, DeleteOne.where(:name => "pebbles").count
   end
 
   # revive
