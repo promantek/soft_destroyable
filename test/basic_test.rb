@@ -25,8 +25,8 @@ class BasicTest < Test::Unit::TestCase
     assert !Parent.deleted.include?(@fred)
   end
 
-  def test_destroy!
-    @fred.destroy!
+  def test_hard_destroy
+    @fred.hard_destroy
     assert_nil Parent.where(:name => "fred").first
   end
 

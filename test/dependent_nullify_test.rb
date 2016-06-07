@@ -60,7 +60,7 @@ class DependentNullifyTest < Test::Unit::TestCase
     @fred.soft_nullify_children << bambam = SoftNullifyChild.new(:name => "bambam")
     assert_equal 2, @fred.reload.soft_nullify_children.count
     assert_equal @fred, pebbles.parent
-    @fred.destroy!
+    @fred.hard_destroy
     assert_equal 1, SoftNullifyChild.where(:name => "pebbles", :parent_id => nil).count
     assert_equal 1, SoftNullifyChild.where(:name => "bambam", :parent_id => nil).count
   end
@@ -70,7 +70,7 @@ class DependentNullifyTest < Test::Unit::TestCase
     @fred.nullify_children << bambam = NullifyChild.new(:name => "bambam")
     assert_equal 2, @fred.reload.nullify_children.count
     assert_equal @fred, pebbles.parent
-    @fred.destroy!
+    @fred.hard_destroy
     assert_nil pebbles.reload.parent
     assert_nil bambam.reload.parent
   end
@@ -79,7 +79,7 @@ class DependentNullifyTest < Test::Unit::TestCase
     @fred.soft_nullify_one = bambam = SoftNullifyOne.new(:name => "bambam")
     assert_equal bambam, @fred.reload.soft_nullify_one
     assert_equal bambam.parent, @fred
-    @fred.destroy!
+    @fred.hard_destroy
     assert_nil Parent.find_by_name("fred")
     assert_nil bambam.reload.parent
   end
@@ -88,7 +88,7 @@ class DependentNullifyTest < Test::Unit::TestCase
     @fred.nullify_one = bambam = NullifyOne.new(:name => "bambam")
     assert_equal bambam, @fred.reload.nullify_one
     assert_equal bambam.parent, @fred
-    @fred.destroy!
+    @fred.hard_destroy
     assert_nil Parent.find_by_name("fred")
     assert_nil bambam.reload.parent
   end

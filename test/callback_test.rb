@@ -28,7 +28,7 @@ class CallbackTest < Test::Unit::TestCase
   def test_callback_before_destroy_bang_for_soft_children
     @fred.soft_callback_children << pebbles = SoftCallbackChild.new(:name => "pebbles")
     assert_raise PreventDestroyBangError do
-      @fred.destroy!
+      @fred.hard_destroy
     end
     assert_equal @fred.reload.deleted?, false
     assert_equal pebbles.reload.deleted?, false
@@ -43,10 +43,10 @@ class CallbackTest < Test::Unit::TestCase
     assert_not_nil pebbles.reload
   end
 
-  def test_callback_before_destroy!
+  def test_callback_before_hard_destroy
     @fred.callback_children << pebbles = CallbackChild.new(:name => "pebbles")
     assert_raise PreventDestroyBangError do
-      @fred.destroy!
+      @fred.hard_destroy
     end
     assert_equal @fred.reload.deleted?, false
     assert_not_nil pebbles.reload
@@ -64,7 +64,7 @@ class CallbackTest < Test::Unit::TestCase
     @fred = Parent.create!(:name => "fred")
     @fred.soft_children << pebbles = SoftChild.new(:name => "pebbles")
     previous_updated_at = @fred.updated_at
-    pebbles.destroy!
+    pebbles.hard_destroy
     assert_not_equal @fred.reload.updated_at, previous_updated_at
   end
 

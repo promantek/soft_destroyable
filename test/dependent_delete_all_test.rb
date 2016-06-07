@@ -39,7 +39,7 @@ class DependentDeleteAllTest < Test::Unit::TestCase
     @fred.soft_delete_all_children << pebbles = SoftDeleteAllChild.new(:name => "pebbles")
     @fred.soft_delete_all_children << bambam = SoftDeleteAllChild.new(:name => "bambam")
     assert_equal 2, @fred.reload.soft_delete_all_children.count
-    @fred.destroy!
+    @fred.hard_destroy
     assert_nil Parent.find_by_id(@fred.id)
     assert_equal 0, SoftDeleteAllChild.where(:name => "pebbles").count
     assert_equal 0, SoftDeleteAllChild.where(:name => "bambam").count
@@ -50,7 +50,7 @@ class DependentDeleteAllTest < Test::Unit::TestCase
     @fred.delete_all_children << pebbles = DeleteAllChild.new(:name => "pebbles")
     @fred.delete_all_children << bambam = DeleteAllChild.new(:name => "bambam")
     assert_equal 2, @fred.reload.delete_all_children.count
-    @fred.destroy!
+    @fred.hard_destroy
     assert_nil Parent.find_by_id(@fred.id)
     assert_equal 0, DeleteAllChild.where(:name => "pebbles").count
     assert_equal 0, DeleteAllChild.where(:name => "bambam").count

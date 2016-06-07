@@ -22,7 +22,7 @@ class NonDependentTest < Test::Unit::TestCase
   def test_destroy_bang_does_not_destroy_non_dependent_children
     @fred.non_dependent_children << pebbles = NonDependentChild.new(:name => "pebbles")
     assert_equal 1, @fred.reload.non_dependent_children.count
-    @fred.destroy!
+    @fred.hard_destroy
     assert_nil Parent.where(:name => "fred").first
     assert_not_nil pebbles.reload
   end

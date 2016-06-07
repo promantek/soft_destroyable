@@ -44,7 +44,7 @@ class ThroughAssociationsTest < Test::Unit::TestCase
     assert_equal 1, @fred.parent_sports.count
     assert_equal 1, @fred.soft_sports.count
     assert_equal 1, @fred.soft_parent_sports.count
-    @fred.destroy!
+    @fred.hard_destroy
     assert_nil Parent.where(:name => "fred").first
     assert_equal 1, Sport.count
     assert_equal 1, SoftSport.count
@@ -76,7 +76,7 @@ class ThroughAssociationsTest < Test::Unit::TestCase
     assert_equal scar, @fred.soft_nickname
     assert_equal rocky, @fred.parent_nickname.nickname
     assert_equal scar, @fred.soft_parent_nickname.soft_nickname
-    @fred.destroy!
+    @fred.hard_destroy
     assert_nil Parent.where(:name => "fred").first
     assert_equal 1, Nickname.count
     assert_equal 1, SoftNickname.count
