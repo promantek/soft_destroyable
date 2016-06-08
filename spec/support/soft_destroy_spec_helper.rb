@@ -71,7 +71,7 @@ module SoftDestroySpecHelper
     end
   end
 
-  # Ensures that the model class hard destroys the associated dependent association on +destroy!+
+  # Ensures that the model class hard destroys the associated dependent association on +hard_destroy+
   # This helper only valid if :dependent => :destroy
   def asserts_hard_destroy_associations?(model_obj, association_symbol, new_association_record)
     # save model obj in case it hasn't been yet
@@ -80,7 +80,7 @@ module SoftDestroySpecHelper
     association_reflection.options[:dependent].should == :destroy
     assign_association(model_obj, association_reflection, new_association_record)
     association_reflection.klass.where(association_reflection.foreign_key => model_obj.id).count.should > 0
-    model_obj.destroy!
+    model_obj.hard_destroy
     association_reflection.klass.where(association_reflection.foreign_key => model_obj.id).count.should == 0
   end
 
