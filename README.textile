@@ -14,13 +14,13 @@ h3. Details
 This changes the behavior of the +destroy+ method to become a soft-destroy, which
 will set the +deleted_at+ attribute to <tt>Time.now</tt>, and the +deleted+ attribute to <tt>true</tt>
 It exposes the +revive+ method to reverse the effects of +destroy+ (for :dependent => :destroy associations only).
-It also exposes the +destroy!+ method which can be used to <b>really</b> destroy an object and it's associations.
+It also exposes the +hard_destroy+ method which can be used to <b>really</b> destroy an object and it's associations.
 
 +revive+ will not revive child associations which have been destroyed by actions other a destroy of the parent.
 This requires the column attribute +revive_with_parent+.
 
 Standard ActiveRecord destroy callbacks are _not_ called, however you can override +before_soft_destroy+, +after_soft_destroy+,
-and +before_destroy!+ on your soft_destroyable models.
+and +before_hard_destroy+ on your soft_destroyable models.
 
 Most standard ActiveRecord dependent options are supported and will behave as expected: :destroy, :restrict_with_exception, :nullify, :delete_all, and :delete.
 The option :restrict_with_error is not fully supported and will behave like :restrict_with_exception.
@@ -32,7 +32,7 @@ Note: The dependent :delete option will delete `has_many` children but nullify `
 
 The +delete+ operation is _not_ modified by this module.
 
-The operations: +destroy+, +destroy!+, and +revive+ are automatically delegated to the dependent association records.
+The operations: +destroy+, +hard_destroy+, and +revive+ are automatically delegated to the dependent association records.
 in a single transaction.
 
 Scopes are provided for +deleted+ and +not_deleted+.   The standard +all+ scope is not polluted, so will still

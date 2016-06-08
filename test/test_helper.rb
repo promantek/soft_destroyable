@@ -177,7 +177,7 @@ def setup_db
       t.soft_destroyable
     end
 
-    # used to test before_soft_destroy and before_destroy!
+    # used to test before_soft_destroy and before_hard_destroy
     create_table :soft_callback_children do |t|
       t.string :name
       t.references :callback_parent
@@ -387,7 +387,7 @@ class SoftCallbackChild < ActiveRecord::Base
     raise PreventSoftDestroyError.new
   end
 
-  def before_destroy!
+  def before_hard_destroy
     raise PreventDestroyBangError.new
   end
 end
@@ -399,7 +399,7 @@ class CallbackChild < ActiveRecord::Base
     raise PreventSoftDestroyError.new
   end
 
-  def before_destroy!
+  def before_hard_destroy
     raise PreventDestroyBangError.new
   end
 end

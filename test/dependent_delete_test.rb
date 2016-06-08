@@ -35,7 +35,7 @@ class DependentDeleteTest < Test::Unit::TestCase
     @fred.soft_delete_one = pebbles = SoftDeleteOne.new(:name => "pebbles")
     assert_equal pebbles, @fred.reload.soft_delete_one
     assert_equal @fred, pebbles.parent
-    @fred.destroy!
+    @fred.hard_destroy
     assert_nil Parent.find_by_id(@fred.id)
     assert_equal 0, SoftDeleteOne.where(:name => "pebbles", :parent_id => @fred.id).count
     assert_equal 1, SoftDeleteOne.where(:name => "pebbles").count
@@ -44,7 +44,7 @@ class DependentDeleteTest < Test::Unit::TestCase
   def test_destroy_bang_has_one_delete_one
     @fred.delete_one = pebbles = DeleteOne.new(:name => "pebbles")
     assert_equal pebbles, @fred.reload.delete_one
-    @fred.destroy!
+    @fred.hard_destroy
     assert_nil Parent.find_by_id(@fred.id)
     assert_equal 0, DeleteOne.where(:name => "pebbles", :parent_id => @fred.id).count
     assert_equal 1, DeleteOne.where(:name => "pebbles").count

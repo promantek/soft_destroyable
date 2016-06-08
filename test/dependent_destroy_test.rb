@@ -42,7 +42,7 @@ class DependentDestroyTest < Test::Unit::TestCase
     @fred.soft_children << SoftChild.new(:name => "pebbles")
     @fred.soft_children << SoftChild.new(:name => "bambam")
     assert_equal @fred.reload.soft_children.count, 2
-    @fred.destroy!
+    @fred.hard_destroy
     assert_nil Parent.find_by_name("fred")
     assert_nil SoftChild.find_by_name("pebbles")
     assert_nil SoftChild.find_by_name("bambam")
@@ -52,7 +52,7 @@ class DependentDestroyTest < Test::Unit::TestCase
     @fred.children << Child.new(:name => "pebbles")
     @fred.children << Child.new(:name => "bambam")
     assert_equal @fred.reload.children.count, 2
-    @fred.destroy!
+    @fred.hard_destroy
     assert_nil Parent.find_by_name("fred")
     assert_nil Child.find_by_name("pebbles")
     assert_nil Child.find_by_name("bambam")
@@ -79,7 +79,7 @@ class DependentDestroyTest < Test::Unit::TestCase
   def test_destroy_bang_has_soft_ones
     @fred.soft_one = SoftOne.new(:name => "bambam")
     assert_equal @fred.reload.soft_one, SoftOne.where(:name => "bambam", :parent_id => @fred.id).first
-    @fred.destroy!
+    @fred.hard_destroy
     assert_nil Parent.find_by_name("fred")
     assert_nil SoftOne.find_by_name("bambam")
   end
@@ -87,7 +87,7 @@ class DependentDestroyTest < Test::Unit::TestCase
   def test_destroy_bang_has_ones
     @fred.one = One.new(:name => "bambam")
     assert_equal @fred.reload.one, One.where(:name => "bambam", :parent_id => @fred.id).first
-    @fred.destroy!
+    @fred.hard_destroy
     assert_nil Parent.find_by_name("fred")
     assert_nil One.find_by_name("bambam")
   end

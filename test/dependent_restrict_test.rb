@@ -20,7 +20,7 @@ class DependentRestrictTest < Test::Unit::TestCase
   end
 
   def test_destroy_bang_no_restrict_or_soft_restrict_children
-    @fred.destroy!
+    @fred.hard_destroy
     assert_nil Parent.find_by_id(@fred.id)
   end
 
@@ -64,7 +64,7 @@ class DependentRestrictTest < Test::Unit::TestCase
     @fred.soft_restrict_children << bambam = SoftRestrictChild.new(:name => "bambam")
     assert_equal 2, @fred.reload.soft_restrict_children.count
     assert_raise ActiveRecord::DeleteRestrictionError do
-      @fred.destroy!
+      @fred.hard_destroy
     end
     assert_equal false, @fred.deleted?
     assert_equal false, pebbles.reload.deleted?
@@ -78,7 +78,7 @@ class DependentRestrictTest < Test::Unit::TestCase
     pebbles.destroy
     bambam.destroy
     assert_equal 0, @fred.soft_restrict_children.not_deleted.count
-    @fred.destroy!
+    @fred.hard_destroy
     assert_nil Parent.find_by_id(@fred.id)
   end
 
@@ -87,7 +87,7 @@ class DependentRestrictTest < Test::Unit::TestCase
     @fred.restrict_children << bambam = RestrictChild.new(:name => "bambam")
     assert_equal 2, @fred.reload.restrict_children.count
     assert_raise ActiveRecord::DeleteRestrictionError do
-      @fred.destroy!
+      @fred.hard_destroy
     end
     assert_equal false, @fred.deleted?
     assert_not_nil RestrictChild.find_by_name("pebbles")
@@ -128,7 +128,7 @@ class DependentRestrictTest < Test::Unit::TestCase
     @fred.soft_restrict_one = SoftRestrictOne.new(:name => "bambam")
     assert_equal @fred.reload.soft_restrict_one, SoftRestrictOne.where(:name => "bambam", :parent_id => @fred.id).first
     assert_raise ActiveRecord::DeleteRestrictionError do
-      @fred.destroy!
+      @fred.hard_destroy
     end
     assert_equal false, @fred.deleted?
     assert_not_nil SoftRestrictOne.find_by_name("bambam")
@@ -139,7 +139,7 @@ class DependentRestrictTest < Test::Unit::TestCase
     assert_equal @fred.reload.soft_restrict_one, SoftRestrictOne.where(:name => "bambam", :parent_id => @fred.id).first
     bambam.destroy
     assert_equal true, @fred.reload.soft_restrict_one.deleted?
-    @fred.destroy!
+    @fred.hard_destroy
     assert_nil Parent.find_by_id(@fred.id)
   end  
 
@@ -147,7 +147,7 @@ class DependentRestrictTest < Test::Unit::TestCase
     @fred.restrict_one = RestrictOne.new(:name => "bambam")
     assert_equal @fred.reload.restrict_one, RestrictOne.where(:name => "bambam", :parent_id => @fred.id).first
     assert_raise ActiveRecord::DeleteRestrictionError do
-      @fred.destroy!
+      @fred.hard_destroy
     end
     assert_equal false, @fred.deleted?
     assert_not_nil RestrictOne.find_by_name("bambam")

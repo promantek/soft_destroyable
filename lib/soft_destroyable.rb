@@ -6,13 +6,13 @@ require "#{File.dirname(__FILE__)}/soft_destroyable/is_soft_destroyable"
 # This changes the behavior of the +destroy+ method to being a soft-destroy, which
 # will set the +deleted_at+ attribute to <tt>Time.now</tt>, and the +deleted+ attribute to <tt>true</tt>
 # It exposes the +revive+ method to reverse the effects of +destroy+ (for :dependent => :destroy associations only).
-# It also exposes the +destroy!+ method which can be used to <b>really</b> destroy an object and it's associations.
+# It also exposes the +hard_destroy+ method which can be used to <b>really</b> destroy an object and it's associations.
 #
 # +revive+ will not cascade revive child associations which have been destroyed by actions other a destroy of the parent.
 # This requires the column attribute +revive_with_parent+.
 #
 # Standard ActiveRecord destroy callbacks are _not_ called, however you can override +before_soft_destroy+, +after_soft_destroy+,
-# and +before_destroy!+ on your soft_destroyable models.
+# and +before_hard_destroy+ on your soft_destroyable models.
 #
 # Standard ActiveRecord dependent options :destroy, :restrict_with_exception, restrict_with_error, :nullify, :delete_all, and :delete are supported.
 # +revive+ will _not_ undo the effects of +nullify+, +delete_all+, and +delete+.   +restrict types+ are _not_ effected by the
@@ -20,7 +20,7 @@ require "#{File.dirname(__FILE__)}/soft_destroyable/is_soft_destroyable"
 #
 # The +delete+ operation is _not_ modified by this module.
 #
-# The operations: +destroy+, +destroy!+, and +revive+ are automatically delegated to the dependent association records.
+# The operations: +destroy+, +hard_destroy+, and +revive+ are automatically delegated to the dependent association records.
 # in a single transaction.
 #
 # Examples:
@@ -58,7 +58,7 @@ module SoftDestroyable
   module SingletonMethods
 
     # returns an array of association symbols that must be managed by soft_destroyable on
-    # destroy and destroy!
+    # destroy and hard_destroy
     def soft_dependencies
       has_one_dependencies + has_many_dependencies
     end
@@ -100,10 +100,10 @@ module SoftDestroyable
     end
 
     # not a recoverable operation
-    def destroy!
+    def hard_destroy
       transaction do
-        before_destroy!
-        cascade_destroy!
+        before_hard_destroy
+        cascade_hard_destroy
         run_callbacks(:touch)
         delete
       end
@@ -138,7 +138,7 @@ module SoftDestroyable
     end
 
     # override
-    def before_destroy!
+    def before_hard_destroy
       # empty
     end
 
@@ -175,15 +175,15 @@ module SoftDestroyable
       }
     end
 
-    def cascade_destroy!
+    def cascade_hard_destroy
       cascade_to_soft_dependents { |assoc_obj|
-      # cascade destroy! to soft dependencies objects
-        if assoc_obj.respond_to?(:destroy!)
-          wrap_with_callbacks(assoc_obj, "destroy!") do
-            assoc_obj.destroy!
+      # cascade hard_destroy to soft dependencies objects
+        if assoc_obj.respond_to?(:hard_destroy)
+          wrap_with_callbacks(assoc_obj, "hard_destroy") do
+            assoc_obj.hard_destroy
           end
         else
-          wrap_with_callbacks(assoc_obj, "destroy!") do
+          wrap_with_callbacks(assoc_obj, "hard_destroy") do
             assoc_obj.destroy
           end
         end

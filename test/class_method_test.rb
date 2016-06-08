@@ -56,8 +56,8 @@ class ClassMethodTest < Test::Unit::TestCase
     assert Parent.restrict_dependencies.include? :restrict_one
   end
 
-  def test_respond_to_destroy!
-    assert @fred.respond_to?(:destroy!)
+  def test_respond_to_hard_destroy
+    assert @fred.respond_to?(:hard_destroy)
   end
 
   def test_respond_to_deleted_scope
