@@ -39,7 +39,7 @@ class ClassMethodTest < Test::Unit::TestCase
     assert Parent.soft_dependencies.include? :soft_parent_nickname
     assert Parent.soft_dependencies.include? :parent_nickname
 
-    assert Parent.soft_dependencies.include? :soft_no_revive_with_parent_attribute_children
+    assert Parent.soft_dependencies.include? :soft_no_revive_w_parent_attr_children
   end
 
   def test_soft_dependency_order
