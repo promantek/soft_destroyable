@@ -62,7 +62,7 @@ Gem::Specification.new do |s|
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 4
-    s.add_runtime_dependency(%q<activerecord>, "~> 5.0")
+    s.add_runtime_dependency(%q<activerecord>, ">=4.2")
     s.add_dependency('rake')
     s.add_dependency('sqlite3')
   end
