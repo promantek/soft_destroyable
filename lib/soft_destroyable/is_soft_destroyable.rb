@@ -4,7 +4,8 @@ module SoftDestroyable
     def self.extended(base) # :nodoc:
       base.class_eval do
         class << self
-          alias_method_chain :soft_destroyable, :flag
+          alias_method :soft_destroyable_without_flag, :soft_destroyable
+          alias_method :soft_destroyable, :soft_destroyable_with_flag
         end
       end
     end

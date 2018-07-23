@@ -191,7 +191,7 @@ def setup_db
     end
 
     # used to test behavior of soft_destroy migration without revive_with_parent column
-    create_table :soft_no_revive_with_parent_attribute_children do |t|
+    create_table :soft_no_revive_w_parent_attr_children do |t|
       t.string :name
       t.references :parent
       t.boolean :deleted, :default => false
@@ -244,7 +244,7 @@ class Parent < ActiveRecord::Base
   has_one :soft_delete_one, :dependent => :delete
   has_one :delete_one, :dependent => :delete
 
-  has_many :soft_no_revive_with_parent_attribute_children, :dependent => :destroy
+  has_many :soft_no_revive_w_parent_attr_children, :dependent => :destroy
 
   soft_destroyable
 end
@@ -404,7 +404,7 @@ class CallbackChild < ActiveRecord::Base
   end
 end
 
-class SoftNoReviveWithParentAttributeChild < ActiveRecord::Base
+class SoftNoReviveWParentAttrChild < ActiveRecord::Base
   belongs_to :parent
   soft_destroyable
 end

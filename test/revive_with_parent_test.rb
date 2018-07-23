@@ -9,7 +9,7 @@ class ReviveWithParentTest < Test::Unit::TestCase
   def teardown
     Parent.delete_all
     SoftChild.delete_all
-    SoftNoReviveWithParentAttributeChild.delete_all
+    SoftNoReviveWParentAttrChild.delete_all
   end
 
   # revive of previously deleted soft children
@@ -43,13 +43,13 @@ class ReviveWithParentTest < Test::Unit::TestCase
   # revive of previously deleted soft children that do NOT support the revive_with_parent attribute
 
   def test_revive_previously_deleted_has_many_soft_children_no_revive_with_parent
-    @fred.soft_no_revive_with_parent_attribute_children <<
-        pebbles = SoftNoReviveWithParentAttributeChild.new(:name => "pebbles")
-    @fred.soft_no_revive_with_parent_attribute_children <<
-        bambam = SoftNoReviveWithParentAttributeChild.new(:name => "bambam")
+    @fred.soft_no_revive_w_parent_attr_children <<
+        pebbles = SoftNoReviveWParentAttrChild.new(:name => "pebbles")
+    @fred.soft_no_revive_w_parent_attr_children <<
+        bambam = SoftNoReviveWParentAttrChild.new(:name => "bambam")
     # soft destroy pebbles
     pebbles.destroy
-    assert_equal @fred.reload.soft_no_revive_with_parent_attribute_children.count, 2
+    assert_equal @fred.reload.soft_no_revive_w_parent_attr_children.count, 2
     @fred.destroy
     assert_equal @fred.deleted?, true
     assert_equal pebbles.reload.deleted?, true

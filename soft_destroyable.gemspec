@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{soft_destroyable}
-  s.version = "0.7.0"
+  s.version = "0.8.0"
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Michael Kintzer"]
+  s.authors = ["Mack Talcott"]
   s.date = %q{2011-03-05}
-  s.description = %q{Rails 4 ActiveRecord compatible soft destroy implementation supporting dependent associations}
-  s.email = %q{rockrep@yahoo.com}
+  s.description = %q{Rails 5 ActiveRecord compatible soft destroy implementation supporting dependent associations}
+  s.email = %q{mtalcott@trakstar.com}
   s.extra_rdoc_files = [
     "README.textile"
   ]
@@ -40,10 +40,10 @@ Gem::Specification.new do |s|
     "test/through_associations_test.rb",
     "uninstall.rb"
   ]
-  s.homepage = %q{http://github.com/rockrep/soft_destroyable}
+  s.homepage = %q{http://github.com/promantek/soft_destroyable}
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
-  s.summary = %q{Rails 4 ActiveRecord compatible soft destroy implementation}
+  s.summary = %q{Rails 5 ActiveRecord compatible soft destroy implementation}
   s.test_files = [
     "spec/support/soft_destroy_spec_helper.rb",
     "test/basic_test.rb",
@@ -62,7 +62,7 @@ Gem::Specification.new do |s|
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 4
-    s.add_runtime_dependency(%q<activerecord>, "~> 4.2")
+    s.add_runtime_dependency(%q<activerecord>, ">=4.2")
     s.add_dependency('rake')
     s.add_dependency('sqlite3')
   end
